@@ -15,7 +15,8 @@ export const TextEditor = () => {
 
   const documentRef = doc(db, "documents", "example-doc");
 
-  const saveContent = () => {
+  const saveContent = throttle(() => {
+    //Using throttle to avoid refresh at every second.
     if (quillRef.current) {
       const content = quillRef.current.getEditor().getContents();
       console.log(`Saving Content to db:`, content);
@@ -28,7 +29,7 @@ export const TextEditor = () => {
 
       isLocalChange.current = false; // Reset local change flag after saving
     }
-  };
+  }, 1000);
 
   useEffect(() => {
     if (quillRef.current) {
@@ -47,6 +48,21 @@ export const TextEditor = () => {
         .catch(console.error);
 
       //Listen to Firestore for any updates and update locally in real-time
+      const unsubscribe = onSnapshot(documentRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const newContent = snapshot.data().content;
+
+          if (!isEditing) {
+            const editor = quillRef.current.getEditor();
+            const currentCursorPosition = editor.getSelection()?.index || 0;
+
+            //set content of our doc to the new content
+            editor.setContents(newContent, "silent"); //In silent mode to avoid triggerring "text-change" event
+
+            editor.setSelection(currentCursorPosition);
+          }
+        }
+      });
 
       //Listen for Local text changes and save it to Firebase
       const editor = quillRef.current.getEditor(); // creating a quill instance
@@ -63,7 +79,9 @@ export const TextEditor = () => {
         }
       });
 
+      //To avoid memory leaks
       return () => {
+        unsubscribe();
         editor.off("text-change");
       };
     }
