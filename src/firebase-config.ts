@@ -7,12 +7,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBKWuLzugdr7jd_1JhUoKB9s4E0RqNzt3w",
-  authDomain: "docs-clone-257f6.firebaseapp.com",
-  projectId: "docs-clone-257f6",
-  storageBucket: "docs-clone-257f6.firebasestorage.app",
-  messagingSenderId: "505665174573",
-  appId: "1:505665174573:web:7e55f7575501f3ac610ca4",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: import.meta.env
+    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
 };
 
 // Initialize Firebase
