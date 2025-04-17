@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="app">
       <header>
-        <h1>Google Docs</h1>
+        <h1>DocSync</h1>
       </header>
       <TextEditor />
     </div>
